@@ -58,4 +58,35 @@ module.exports = {
             })
         }
     },
+
+    deleteSubject: async (req, res) => {
+        try {
+            const userId = req.params.userId
+            const subjectId = req.params.subjectId
+            const userData = await userModel.findById(userId)
+            if (userData.userRole !== "Admin") {
+                return res.status(403).send({
+                    success: false,
+                    message: 'Only admin users can delete subjects',
+                })
+            }
+            const subjectData = await subjectModel.findByIdAndDelete(subjectId)
+            if (!subjectData) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'Subject not found',
+                })
+            }
+            res.status(200).send({
+                success: true,
+                message: 'Subject deleted successfully',
+            })
+        } catch (error) {
+            res.status(500).send({
+                success: false,
+                message: 'Internal server error',
+                error: error.message,
+            })
+        }
+    },
 }
