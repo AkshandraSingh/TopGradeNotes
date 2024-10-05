@@ -95,6 +95,31 @@ module.exports = {
             const subjectsData = await subjectModel.find()
             res.status(200).send({
                 success: true,
+                message: 'All subjects retrieved successfully',
+                subjects: subjectsData,
+            })
+        } catch (error) {
+            res.status(500).send({
+                success: false,
+                message: 'Internal server error',
+                error: error.message,
+            })
+        }
+    },
+
+    searchSubjectByName: async (req, res) => {
+        try {
+            const searchTerm = req.params.searchTerm
+            const subjectsData = await subjectModel.find({ subjectName: { $regex: searchTerm, $options: 'i' } })
+            if (!subjectsData) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'No subjects found',
+                })
+            }
+            res.status(200).send({
+                success: true,
+                message: "Subjects found successfully",
                 subjects: subjectsData,
             })
         } catch (error) {

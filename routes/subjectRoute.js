@@ -8,5 +8,6 @@ subjectRouter.post('/createSubject/:userId', subjectController.createSubject)
 subjectRouter.patch('/updateSubject/:userId/:subjectId', subjectController.updateSubject)
 subjectRouter.delete('/deleteSubject/:userId/:subjectId', subjectController.deleteSubject)
 subjectRouter.get('/getAllSubjects', subjectController.getAllSubjects)
+subjectRouter.get('/searchSubjectByName/:searchTerm', subjectController.searchSubjectByName)
 
 module.exports = subjectRouter
