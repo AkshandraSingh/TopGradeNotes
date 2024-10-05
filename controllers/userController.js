@@ -96,5 +96,40 @@ module.exports = {
                 error: error.message,
             })
         }
-    }
+    },
+
+    resetPassword: async (req, res) => {
+        try {
+            const { resetToken } = req.params
+            const { newPassword, confirmPassword } = req.body
+            const decodedData = jwt.verify(resetToken, process.env.JWT_SECRET)
+            const userId = decodedData.userData._id
+            const userData = await userModel.findByIdAndUpdate(userId)
+            if (!decodedData) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'Invalid or expired reset token'
+                })
+            }
+            if (newPassword === confirmPassword) {
+                return res.status(400).send({
+                    success: false,
+                    message: 'New password and confirmation password must match'
+                })
+            }
+            const hashedPassword = await bcrypt.hash(newPassword, 10)
+            userData.userPassword = hashedPassword
+            await userData.save()
+            res.status(200).send({
+                success: true,
+                message: 'Password reset successfully'
+            })
+        } catch (error) {
+            res.status(500).send({
+                success: false,
+                message: 'Internal server error',
+                error: error.message,
+            })
+        }
+    },
 }
