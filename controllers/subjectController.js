@@ -89,4 +89,20 @@ module.exports = {
             })
         }
     },
+
+    getAllSubjects: async (req, res) => {
+        try {
+            const subjectsData = await subjectModel.find()
+            res.status(200).send({
+                success: true,
+                subjects: subjectsData,
+            })
+        } catch (error) {
+            res.status(500).send({
+                success: false,
+                message: 'Internal server error',
+                error: error.message,
+            })
+        }
+    },
 }
